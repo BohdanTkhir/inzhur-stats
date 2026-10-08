@@ -9,8 +9,12 @@ label{display:block;margin:16px 0;color:#aaa;font-size:14px}
 input{display:block;width:100%;margin-top:7px;border:1px solid #454846;background:#202221;color:#fff;border-radius:13px;padding:14px;font-size:18px;outline:none}
 input:focus{border-color:#ffb800}
 button{width:100%;margin-top:18px;border:0;border-radius:14px;padding:14px;font-size:17px;font-weight:700;background:#ffb900;color:#202221;cursor:pointer}
-.hidden{display:none!important}
-.bank{width:100%;text-align:center}
+
+/* Обов'язкове правило для приховування */
+.hidden{display:none !important}
+
+/* Блок лічильника */
+.bank{width:100%;text-align:center;display:block}
 .total{font-size:clamp(42px,10vw,68px);font-weight:500;letter-spacing:-2px;margin-bottom:34px;font-variant-numeric:tabular-nums}
 .ring-wrap{position:relative;width:min(82vw,425px);height:min(82vw,425px);margin:auto;display:grid;place-items:center}
 .ring{width:100%;height:100%;border-radius:50%;position:relative;filter:drop-shadow(0 8px 12px #0005)}
@@ -18,7 +22,7 @@ button{width:100%;margin-top:18px;border:0;border-radius:14px;padding:14px;font-
 .segments i{position:absolute;inset:0;background:#ffb400;transform-origin:50% 50%}
 .segments i:nth-child(odd){background:#ffc32a}
 
-/* ІДЕАЛЬНО РІВНІ 12 СЕГМЕНТІВ (по 30°) */
+/* Геометрія 12 сегментів */
 .segments i:nth-child(1) {clip-path:polygon(50% 50%, 50% 0%, 75% 6.7%)}
 .segments i:nth-child(2) {clip-path:polygon(50% 50%, 75% 6.7%, 93.3% 25%)}
 .segments i:nth-child(3) {clip-path:polygon(50% 50%, 93.3% 25%, 100% 50%)}
