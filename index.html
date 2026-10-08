@@ -9,7 +9,57 @@
 <body>
   <main class="app">
     <section class="setup" id="setup">
+      <h1>Dividend Bank</h1><!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dividend Bank</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="setup" id="setup">
       <h1>Dividend Bank</h1>
+      <label>Кількість сертифікатів
+        <input id="certificates" type="number" min="0" step="1" value="40477">
+      </label>
+      <label>Дивіденди на 1 сертифікат / міс (₴)
+        <input id="rate" type="number" min="0" step="0.01" value="50">
+      </label>
+      <button id="start">Запустити</button>
+    </section>
+
+    <section class="bank hidden" id="bank">
+      <div class="total" id="total">0.00 ₴</div>
+
+      <div class="ring-wrap">
+        <div class="ring" id="ring">
+          <div class="segments">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="inner">
+            <div class="check">✓</div>
+            <div class="earned" id="earned">0.0000 ₴</div>
+            <div class="caption">Нараховано</div>
+          </div>
+        </div>
+
+        <div class="coin" id="coin">₴</div>
+      </div>
+
+      <div class="stats">
+        <span><b id="certOut">0</b> сертифікатів</span>
+        <span><b id="rateOut">0</b> ₴/серт</span>
+      </div>
+
+      <button class="settings" id="edit">⚙ Змінити</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
       <label>Кількість сертифікатів
         <input id="certificates" type="number" min="0" step="1" value="40477">
       </label>
