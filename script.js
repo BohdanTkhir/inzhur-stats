@@ -22,20 +22,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 function formatFraction(formattedStr) {
-  // Розділяємо цілу та дробову частини
   const parts = formattedStr.split(",");
   if (parts.length < 2) return formattedStr;
   
-  const whole = parts[0];      // Гривні
-  const decimals = parts[1];   // Копійки та їх частки
+  const whole = parts[0];
+  const decimals = parts[1];
 
-  // Якщо копійок більше ніж 2 знаки (наприклад, 4 знаки: "5525")
+  // Якщо 4 цифри після коми (наприклад, "6276")
   if (decimals.length > 2) {
-    const mainCop = decimals.slice(0, 2);  // Перші дві цифри копійок (звичайний розмір)
-    const microCop = decimals.slice(2);    // Третя і четверта цифри (зменшений розмір)
+    const mainCop = decimals.slice(0, 2); // 62 (звичайний розмір)
+    const microCop = decimals.slice(2);   // 76 (зменшений)
     return `${whole},${mainCop}<span style="font-size: 0.65em; opacity: 0.75;">${microCop}</span>`;
   }
   
+  // Якщо 2 цифри (верхня сума) — залишаємо все звичайним розміром
   return formattedStr;
 }
 
