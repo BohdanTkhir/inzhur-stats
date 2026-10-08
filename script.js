@@ -21,19 +21,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return monthlyTotal * (elapsed / secondsInMonth);
   }
 
-  function formatSmallDecimals(formattedStr) {
-  // Розділяємо число по комі та загортаємо дробову частину в span
+function formatFraction(formattedStr) {
+  // Розділяємо цілу та дробову частини
   const parts = formattedStr.split(",");
   if (parts.length < 2) return formattedStr;
-  return `${parts[0]}<span style="font-size: 0.6em; opacity: 0.85;">,${parts[1]}</span>`;
+  
+  const whole = parts[0];      // Гривні
+  const decimals = parts[1];   // Копійки та їх частки
+
+  // Якщо копійок більше ніж 2 знаки (наприклад, 4 знаки: "5525")
+  if (decimals.length > 2) {
+    const mainCop = decimals.slice(0, 2);  // Перші дві цифри копійок (звичайний розмір)
+    const microCop = decimals.slice(2);    // Третя і четверта цифри (зменшений розмір)
+    return `${whole},${mainCop}<span style="font-size: 0.65em; opacity: 0.75;">${microCop}</span>`;
+  }
+  
+  return formattedStr;
 }
 
 function tick(animate=true){
   const value = calc();
   
-  // Використовуємо innerHTML замість textContent, щоб спрацював тег <span>
-  if (totalEl) totalEl.innerHTML = formatSmallDecimals(money(value, 2)) + " ₴";
-  if (earnedEl) earnedEl.innerHTML = formatSmallDecimals(money(value, 4)) + " ₴";
+  // Для загальної суми (2 знаки): звичайне форматування XX,XX
+  if (totalEl) totalEl.textContent = money(value, 2) + " ₴";
+  
+  // Для детальної суми (4 знаки): перші 2 цифри копійок звичайні, останні 2 — зменшені
+  if (earnedEl) earnedEl.innerHTML = formatFraction(money(value, 4)) + " ₴";
 
   if(animate && bank){
     bank.classList.remove("heartbeat");
