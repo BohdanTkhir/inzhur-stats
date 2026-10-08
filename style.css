@@ -48,3 +48,7 @@ button{width:100%;margin-top:18px;border:0;border-radius:14px;padding:14px;font-
 .stats{margin:28px 0 0;color:#999;font-size:15px;display:flex;justify-content:center;gap:28px}
 .stats b{color:#eee;font-weight:500}
 .settings{width:auto;padding:10px 18px;background:#303332;color:#bbb;font-size:14px;margin:20px auto 0;display:block}
+/* Переміщуємо монетку трохи вище, щоб не закривала цифри */
+.coin {
+  z-index: 1; /* або повертаємо шар за текст */
+}
