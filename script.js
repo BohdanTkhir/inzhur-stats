@@ -26,29 +26,28 @@ function formatFraction(formattedStr) {
   if (parts.length < 2) return formattedStr;
   
   const whole = parts[0];
-  const decimals = parts[1];
+  const decimals = parts[1]; // Наприклад "9397"
 
-  // Якщо 4 цифри після коми (наприклад, "6276")
+  // Якщо маємо 4 цифри копійок ("9397")
   if (decimals.length > 2) {
-    const mainCop = decimals.slice(0, 2); // 62 (звичайний розмір)
-    const microCop = decimals.slice(2);   // 76 (зменшений)
+    const mainCop = decimals.slice(0, 2); // "93" (звичайний розмір)
+    const microCop = decimals.slice(2);   // "97" (зменшений)
     return `${whole},${mainCop}<span style="font-size: 0.65em; opacity: 0.75;">${microCop}</span>`;
   }
   
-  // Якщо 2 цифри (верхня сума) — залишаємо все звичайним розміром
   return formattedStr;
 }
 
-function tick(animate=true){
+function tick(animate = true) {
   const value = calc();
   
-  // Для загальної суми (2 знаки): звичайне форматування XX,XX
+  // Верхня сума (2 знаки) — звичайний розмір для всього
   if (totalEl) totalEl.textContent = money(value, 2) + " ₴";
   
-  // Для детальної суми (4 знаки): перші 2 цифри копійок звичайні, останні 2 — зменшені
+  // Нижня сума (4 знаки) — XX,XXxx (перші 2 цифри копійок звичайні, останні 2 зменшені)
   if (earnedEl) earnedEl.innerHTML = formatFraction(money(value, 4)) + " ₴";
 
-  if(animate && bank){
+  if (animate && bank) {
     bank.classList.remove("heartbeat");
     void bank.offsetWidth;
     bank.classList.add("heartbeat");
