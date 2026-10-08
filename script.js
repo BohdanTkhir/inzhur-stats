@@ -21,17 +21,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return monthlyTotal * (elapsed / secondsInMonth);
   }
 
-  function tick(animate = true) {
-    const value = calc();
-    if (totalEl) totalEl.textContent = money(value, 2) + " ₴";
-    if (earnedEl) earnedEl.textContent = money(value, 4) + " ₴";
+  function formatSmallDecimals(formattedStr) {
+  // Розділяємо число по комі та загортаємо дробову частину в span
+  const parts = formattedStr.split(",");
+  if (parts.length < 2) return formattedStr;
+  return `${parts[0]}<span style="font-size: 0.6em; opacity: 0.85;">,${parts[1]}</span>`;
+}
 
-    if (animate && bank) {
-      bank.classList.remove("heartbeat");
-      void bank.offsetWidth;
-      bank.classList.add("heartbeat");
-    }
+function tick(animate=true){
+  const value = calc();
+  
+  // Використовуємо innerHTML замість textContent, щоб спрацював тег <span>
+  if (totalEl) totalEl.innerHTML = formatSmallDecimals(money(value, 2)) + " ₴";
+  if (earnedEl) earnedEl.innerHTML = formatSmallDecimals(money(value, 4)) + " ₴";
+
+  if(animate && bank){
+    bank.classList.remove("heartbeat");
+    void bank.offsetWidth;
+    bank.classList.add("heartbeat");
   }
+}
 
   function start(e) {
     if (e) e.preventDefault();
