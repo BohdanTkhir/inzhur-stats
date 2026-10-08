@@ -8,17 +8,19 @@
 </head>
 <body>
   <main class="app">
+    <!-- Форма налаштувань -->
     <section class="setup" id="setup">
       <h1>Dividend Bank</h1>
       <label>Кількість сертифікатів
         <input id="certificates" type="number" min="0" step="1" value="40477">
       </label>
-      <label>Dividend rate, % річних
-        <input id="rate" type="number" min="0" step="0.0001" value="8.5">
+      <label>Дивіденди на 1 сертифікат / міс (₴)
+        <input id="rate" type="number" min="0" step="0.01" value="50">
       </label>
       <button id="start" type="button">Запустити</button>
     </section>
 
+    <!-- Блок лічильника -->
     <section class="bank hidden" id="bank">
       <div class="total" id="total">0.00 ₴</div>
 
@@ -35,12 +37,11 @@
         </div>
 
         <div class="coin" id="coin">₴</div>
-        <div class="bank-glow"></div>
       </div>
 
       <div class="stats">
         <span><b id="certOut">0</b> сертифікатів</span>
-        <span><b id="rateOut">0</b>% річних</span>
+        <span><b id="rateOut">0</b> ₴/серт</span>
       </div>
 
       <button class="settings" id="edit" type="button">⚙ Змінити</button>
