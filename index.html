@@ -1,53 +1,236 @@
 <!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Dividend Bank</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Калькулятор дивідендів</title>
+<style>
+:root{--bg:#202221;--card:#292b2a;--inner:#242625;--line:#454846;--text:#f3f3f3;--mute:#a0a3a1;--gold:#ffb400;--gold2:#ffc32a;--s:min(80vw,380px);
+  box-sizing:border-box;color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{min-height:100vh;display:flex;justify-content:center}
+.app{width:min(100%,560px);padding:24px 18px 40px}
+h1{margin:0 0 18px;text-align:center;font-size:26px;font-weight:600}
+.tabs{display:flex;background:var(--card);border-radius:14px;padding:4px;gap:4px;margin-bottom:16px}
+.tabs button{flex:1;border:0;border-radius:11px;padding:11px 8px;font:inherit;font-size:14px;font-weight:600;background:transparent;color:var(--mute);cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--gold);color:#202221}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.card{background:var(--card);border-radius:20px;padding:18px;display:grid;gap:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.row{grid-template-columns:1fr}}
+label{display:block;color:var(--mute);font-size:13px}
+input,select{display:block;width:100%;margin-top:6px;border:1px solid var(--line);background:var(--bg);color:#fff;border-radius:12px;padding:12px;font:inherit;font-size:17px}
+input:focus,select:focus{border-color:var(--gold)}
+.hidden{display:none!important}
+.total{text-align:center;font-size:clamp(38px,10vw,60px);font-weight:500;letter-spacing:-2px;margin:26px 0 22px;font-variant-numeric:tabular-nums}
+.total small{display:block;font-size:14px;letter-spacing:0;color:var(--mute);font-weight:400;margin-top:4px}
+.ring-wrap{position:relative;width:var(--s);height:var(--s);margin:auto}
+.ring{position:absolute;inset:0;border-radius:50%;box-shadow:0 8px 25px #0005;
+  background:conic-gradient(var(--gold) 0 30deg,var(--gold2) 30deg 60deg,var(--gold) 60deg 90deg,var(--gold2) 90deg 120deg,var(--gold) 120deg 150deg,var(--gold2) 150deg 180deg,var(--gold) 180deg 210deg,var(--gold2) 210deg 240deg,var(--gold) 240deg 270deg,var(--gold2) 270deg 300deg,var(--gold) 300deg 330deg,var(--gold2) 330deg 360deg)}
+.inner{position:absolute;inset:18%;border-radius:50%;background:var(--inner);z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 0 10px #d891001f}
+.earned{font-size:clamp(24px,6.4vw,36px);font-weight:500;letter-spacing:-1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.earned .mic{font-size:.65em;opacity:.7}
+.caption{font-size:16px;color:var(--mute);margin-top:8px}
+.coin{position:absolute;z-index:1;top:-4%;left:50%;width:38px;height:38px;margin-left:-19px;border-radius:50%;background:#ffd23b;color:#765100;border:2px solid #f2aa00;display:grid;place-items:center;font-weight:800;opacity:0;box-shadow:0 4px 12px #0007}
+.beat .inner{animation:beat .65s cubic-bezier(.2,.9,.3,1)}
+.beat .coin{animation:fall .65s cubic-bezier(.18,.82,.35,1)}
+@keyframes beat{0%{transform:scale(1)}25%{transform:scale(1.045)}55%{transform:scale(1.018)}100%{transform:scale(1)}}
+@keyframes fall{0%{opacity:0;transform:translateY(-60px) scale(.6) rotate(-20deg)}15%{opacity:1}78%{opacity:1;transform:translateY(calc(var(--s)*.55)) rotate(300deg)}100%{opacity:0;transform:translateY(calc(var(--s)*.6)) scale(.75) rotate(340deg)}}
+@media(prefers-reduced-motion:reduce){.beat .inner,.beat .coin{animation:none}}
+.persec{margin:26px 0 12px;text-align:center}
+.persec b{font-size:26px;font-weight:600;color:var(--gold2);font-variant-numeric:tabular-nums}
+.persec span{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:420px){.grid{grid-template-columns:repeat(2,1fr)}}
+.grid div{background:var(--card);border-radius:14px;padding:10px;text-align:center;font-size:12px;color:var(--mute)}
+.grid b{display:block;color:var(--text);font-size:15px;font-weight:500;margin-top:3px;font-variant-numeric:tabular-nums}
+.result{text-align:center;padding:10px 0 4px}
+.result b{display:block;font-size:clamp(38px,11vw,60px);font-weight:600;color:var(--gold2);letter-spacing:-1px;font-variant-numeric:tabular-nums}
+.result span{color:var(--mute);font-size:14px}
+.cta{border:0;border-radius:13px;padding:13px;font:inherit;font-size:16px;font-weight:700;background:var(--gold);color:#202221;cursor:pointer;width:100%}
+.note{color:var(--mute);font-size:12px;text-align:center;margin:18px 0 0;line-height:1.5}
+</style>
 </head>
 <body>
-  <main class="app">
-    <!-- Форма налаштувань -->
-    <section class="setup" id="setup">
-      <h1>Dividend Bank</h1>
+<main class="app">
+  <h1>Калькулятор дивідендів</h1>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tabLive" aria-selected="true">Нарахування</button>
+    <button role="tab" id="tabGoal" aria-selected="false">Скільки сертифікатів потрібно</button>
+  </div>
+
+  <!-- Режим 1: наживо -->
+  <section id="live">
+    <div class="card row">
       <label>Кількість сертифікатів
-        <input id="certificates" type="number" min="0" step="1" value="40477">
+        <input id="certs" type="number" min="0" step="1" value="150000" inputmode="numeric">
       </label>
       <label>Дивіденди на 1 сертифікат / міс (₴)
-        <input id="rate" type="number" min="0" step="0.01" value="0.08">
+        <input id="rate" type="number" min="0" step="0.001" value="0.081" inputmode="decimal">
       </label>
-      <button id="start" type="button">Запустити</button>
-    </section>
+    </div>
 
-    <!-- Блок лічильника -->
-    <section class="bank hidden" id="bank">
-      <div class="total" id="total">0.00 ₴</div>
+    <div class="total" id="total">0,00 ₴<small id="totalSub"></small></div>
 
-      <div class="ring-wrap">
-        <div class="ring" id="ring">
-          <div class="segments">
-            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-          </div>
-          <div class="inner">
-            <div class="check">✓</div>
-            <div class="earned" id="earned">0.0000 ₴</div>
-            <div class="caption">Нараховано</div>
-          </div>
-        </div>
-
-        <div class="coin" id="coin">₴</div>
+    <div class="ring-wrap" id="wrap">
+      <div class="ring"></div>
+      <div class="coin">₴</div>
+      <div class="inner">
+        <div class="earned" id="earned">0,0000 ₴</div>
+        <div class="caption">Нараховано</div>
       </div>
+    </div>
 
-      <div class="stats">
-        <span><b id="certOut">0</b> сертифікатів</span>
-        <span><b id="rateOut">0</b> ₴/серт</span>
+    <div class="persec"><b id="perSec">0 коп/с</b><span id="perSecSub">капає щосекунди</span></div>
+
+    <div class="grid">
+      <div>за хвилину<b id="gMin">—</b></div>
+      <div>за годину<b id="gHour">—</b></div>
+      <div>за добу<b id="gDay">—</b></div>
+      <div>за місяць<b id="gMonth">—</b></div>
+    </div>
+  </section>
+
+  <!-- Режим 2: зворотний -->
+  <section id="goal" class="hidden">
+    <div class="card">
+      <div class="row">
+        <label>Бажана сума дивідендів (₴)
+          <input id="want" type="number" min="0" step="100" value="10000" inputmode="decimal">
+        </label>
+        <label>За період
+          <select id="period">
+            <option value="month">на місяць</option>
+            <option value="day">на добу</option>
+            <option value="year">на рік</option>
+          </select>
+        </label>
       </div>
+      <label>Дивіденди на 1 сертифікат / міс (₴)
+        <input id="rate2" type="number" min="0" step="0.001" value="0.081" inputmode="decimal">
+      </label>
+    </div>
 
-      <button class="settings" id="edit" type="button">⚙ Змінити</button>
-    </section>
-  </main>
+    <div class="result" style="margin-top:22px">
+      <span>Потрібно сертифікатів</span>
+      <b id="need">0</b>
+      <span id="needSub"></span>
+    </div>
 
-  <script src="script.js"></script>
+    <div class="grid" style="margin-top:16px">
+      <div>за секунду<b id="rSec">—</b></div>
+      <div>за годину<b id="rHour">—</b></div>
+      <div>за добу<b id="rDay">—</b></div>
+      <div>за рік<b id="rYear">—</b></div>
+    </div>
+
+    <button class="cta" id="apply" style="margin-top:16px">Подивитись, як це капає</button>
+  </section>
+
+  <p class="note">Сума рахується від 1-го числа поточного місяця до цієї секунди.<br>
+  Місячні дивіденди = сертифікати × дивіденд на сертифікат, розподілені рівномірно по секундах місяця.</p>
+</main>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const nf = (d) => new Intl.NumberFormat("uk-UA",{minimumFractionDigits:d,maximumFractionDigits:d});
+  const f2 = nf(2), f4 = nf(4);
+  const money = v => f2.format(v) + " ₴";
+  const num = el => Math.max(0, parseFloat(String(el.value).replace(",", ".")) || 0);
+
+  function daysInMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); }
+
+  // ---- Режим 1 ----
+  function calcLive(now){
+    const certs = Math.floor(num($("#certs"))), rate = num($("#rate"));
+    const monthly = certs * rate;
+    const start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    const secMonth = daysInMonth(now) * 86400;
+    const perSec = monthly / secMonth;
+    const accrued = perSec * ((now.getTime() - start) / 1000);
+    return {certs, rate, monthly, perSec, accrued};
+  }
+
+  function microFormat(v){
+    // XX,XX + зменшені останні 2 знаки з 4
+    const parts = f4.formatToParts(v);
+    let out = "", dec = "";
+    for(const p of parts){
+      if(p.type === "fraction") dec = p.value; else out += p.value;
+    }
+    return out + dec.slice(0,2) + '<span class="mic">' + dec.slice(2) + "</span>";
+  }
+
+  function kop(perSec){
+    const k = perSec * 100;
+    return (k >= 1 ? nf(2).format(k) : nf(3).format(k)) + " коп/с";
+  }
+
+  function renderLive(pulse){
+    const now = new Date();
+    const r = calcLive(now);
+    $("#total").firstChild.nodeValue = money(r.accrued);
+    $("#totalSub").textContent = "з 1 " + now.toLocaleDateString("uk-UA",{month:"long"}) + ", станом на " + now.toLocaleTimeString("uk-UA");
+    $("#earned").innerHTML = microFormat(r.accrued) + " ₴";
+    $("#perSec").textContent = kop(r.perSec);
+    $("#perSecSub").textContent = "= " + nf(6).format(r.perSec) + " ₴ щосекунди";
+    $("#gMin").textContent = money(r.perSec*60);
+    $("#gHour").textContent = money(r.perSec*3600);
+    $("#gDay").textContent = money(r.perSec*86400);
+    $("#gMonth").textContent = money(r.monthly);
+    if(pulse){
+      const w = $("#wrap");
+      w.classList.remove("beat"); void w.offsetWidth; w.classList.add("beat");
+    }
+  }
+
+  // ---- Режим 2 ----
+  function renderGoal(){
+    const want = num($("#want")), rate = num($("#rate2"));
+    const k = {day: 1/ daysInMonth(new Date()), month: 1, year: 12}[$("#period").value];
+    const monthlyNeeded = $("#period").value === "day" ? want * daysInMonth(new Date()) : want / k;
+    const certs = rate > 0 ? Math.ceil(monthlyNeeded / rate) : 0;
+    const monthly = certs * rate;
+    const perSec = monthly / (daysInMonth(new Date()) * 86400);
+    $("#need").textContent = rate > 0 ? nf(0).format(certs) : "—";
+    $("#needSub").textContent = rate > 0 ? "≈ " + money(monthly) + " на місяць" : "Вкажіть дивіденд на сертифікат";
+    $("#rSec").textContent = kop(perSec);
+    $("#rHour").textContent = money(perSec*3600);
+    $("#rDay").textContent = money(perSec*86400);
+    $("#rYear").textContent = money(monthly*12);
+    return certs;
+  }
+
+  // ---- Вкладки ----
+  function tab(goal){
+    $("#live").classList.toggle("hidden", goal);
+    $("#goal").classList.toggle("hidden", !goal);
+    $("#tabLive").setAttribute("aria-selected", String(!goal));
+    $("#tabGoal").setAttribute("aria-selected", String(goal));
+    if(goal){ $("#rate2").value = $("#rate").value; renderGoal(); } else renderLive(false);
+  }
+  $("#tabLive").onclick = () => tab(false);
+  $("#tabGoal").onclick = () => tab(true);
+
+  ["#want","#period","#rate2"].forEach(s => $(s).addEventListener("input", renderGoal));
+  ["#certs","#rate"].forEach(s => $(s).addEventListener("input", () => renderLive(false)));
+
+  $("#apply").onclick = () => {
+    const c = renderGoal();
+    $("#certs").value = c;
+    $("#rate").value = $("#rate2").value;
+    tab(false);
+  };
+
+  // тік строго на початку кожної секунди
+  renderLive(false);
+  (function loop(){
+    setTimeout(() => { if(!$("#live").classList.contains("hidden")) renderLive(true); loop(); }, 1000 - (Date.now() % 1000));
+  })();
+})();
+</script>
 </body>
 </html>
